@@ -1,0 +1,19 @@
+{
+    "name": "melni/advanced-course-php",
+    "description": "collective blog",
+    "autoload": {
+        "psr-4": {
+            "Melni\\AdvancedCoursePhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Roman",
+            "email": "Melnikov_RV@list.ru"
+        }
+    ],
+    "require": {
+        "roave/security-advisories": "dev-latest",
+        "fakerphp/faker": "^1.20"
+    }
+}

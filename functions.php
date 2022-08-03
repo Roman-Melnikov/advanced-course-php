@@ -4,7 +4,7 @@ use Melni\AdvancedCoursePhp\Blog\{User, Post, Comment};
 function createUser($faker): User
 {
     $id = (int)$faker->uuid();
-    $name = $faker->name();
+    $name = $faker->firstName();
     $surname = $faker->lastName();
 
     return new User($id, $name, $surname);

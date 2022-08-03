@@ -22,7 +22,7 @@ class User
 
     public function __toString(): string
     {
-        return $this->getName() . $this->getSurname();
+        return $this->getName() . ' ' . $this->getSurname();
     }
 
     /**

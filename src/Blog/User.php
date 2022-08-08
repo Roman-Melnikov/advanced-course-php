@@ -2,74 +2,44 @@
 
 namespace Melni\AdvancedCoursePhp\Blog;
 
+use Melni\AdvancedCoursePhp\Person\Name;
+
 class User
 {
-    private int $id;
-    private string $name;
-    private string $surname;
-
-    /**
-     * @param int $id
-     * @param string $name
-     * @param string $surname
-     */
-    public function __construct(int $id, string $name, string $surname)
+    public function __construct(
+        private UUID   $uuid,
+        private Name   $name,
+        private string $username
+    )
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->surname = $surname;
     }
 
     public function __toString(): string
     {
-        return $this->getName() . ' ' . $this->getSurname();
+        return $this->getName() . ' ' . $this->getUsername();
     }
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getId(): int
+    public function getUuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
-     * @param int $id
+     * @return Name
      */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
+    public function getName(): Name
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return string
      */
-    public function getSurname(): string
+    public function getUsername(): string
     {
-        return $this->surname;
-    }
-
-    /**
-     * @param string $surname
-     */
-    public function setSurname(string $surname): void
-    {
-        $this->surname = $surname;
+        return $this->username;
     }
 }

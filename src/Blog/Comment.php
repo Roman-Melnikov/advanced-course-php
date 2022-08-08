@@ -2,27 +2,15 @@
 
 namespace Melni\AdvancedCoursePhp\Blog;
 
-use Melni\AdvancedCoursePhp\Blog\{User, Post};
-
 class Comment
 {
-    private int $id;
-    private int $user_id;
-    private int $post_id;
-    private string $text;
-
-    /**
-     * @param int $id
-     * @param int $user_id
-     * @param int $post_id
-     * @param string $text
-     */
-    public function __construct(int $id, User $user, Post $post, string $text)
+    public function __construct(
+        private UUID   $uuid,
+        private User   $user,
+        private Post   $post,
+        private string $txt
+    )
     {
-        $this->id = $id;
-        $this->user_id = $user->getId();
-        $this->post_id = $post->getId();
-        $this->text = $text;
     }
 
     public function __toString(): string
@@ -31,51 +19,27 @@ class Comment
     }
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getId(): int
+    public function getUuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
-     * @param int $id
+     * @return \Melni\AdvancedCoursePhp\Blog\User
      */
-    public function setId(int $id): void
+    public function getUser(): User
     {
-        $this->id = $id;
+        return $this->user;
     }
 
     /**
-     * @return int
+     * @return \Melni\AdvancedCoursePhp\Blog\Post
      */
-    public function getUserId(): int
+    public function getPost(): Post
     {
-        return $this->user_id;
-    }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPostId(): int
-    {
-        return $this->post_id;
-    }
-
-    /**
-     * @param int $post_id
-     */
-    public function setPostId(int $post_id): void
-    {
-        $this->post_id = $post_id;
+        return $this->post;
     }
 
     /**
@@ -83,14 +47,6 @@ class Comment
      */
     public function getText(): string
     {
-        return $this->text;
-    }
-
-    /**
-     * @param string $text
-     */
-    public function setText(string $text): void
-    {
-        $this->text = $text;
+        return $this->txt;
     }
 }

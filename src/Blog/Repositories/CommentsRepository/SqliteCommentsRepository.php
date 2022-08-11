@@ -1,10 +1,11 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories;
+namespace Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Comment;
 use Melni\AdvancedCoursePhp\Blog\Exceptions\CommentNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
+use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Person\Name;
@@ -27,10 +28,10 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
                     (:uuid, :txt, :user_uuid, :post_uuid)'
         );
         $statement->execute([
-            ':uuid' => (string)$comment->getUuid(),
+            ':uuid' => $comment->getUuid(),
             ':txt' => $comment->getText(),
-            ':user_uuid' => (string)$comment->getUser()->getUuid(),
-            ':post_uuid' => (string)$comment->getPost()->getUuid(),
+            ':user_uuid' => $comment->getUser()->getUuid(),
+            ':post_uuid' => $comment->getPost()->getUuid(),
         ]);
     }
 
@@ -57,7 +58,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
         if (!$result) {
             throw new CommentNotFoundException(
-                'Комментария с uuid: ' . (string)$uuid . 'нет'
+                'Комментария с uuid: ' . $uuid . ' нет'
             );
         }
 
@@ -68,9 +69,9 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         );
 
         $post = new Post(
-            $uuid,
+            new UUID($result['post_uuid']),
             $user,
-            $result['heading'],
+            $result['title'],
             $result['text']
         );
 

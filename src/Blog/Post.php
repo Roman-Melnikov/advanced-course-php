@@ -7,7 +7,7 @@ class Post
     public function __construct(
         private UUID   $uuid,
         private User   $autor,
-        private string $heading,
+        private string $title,
         private string $text
     )
     {
@@ -15,7 +15,7 @@ class Post
 
     public function __toString(): string
     {
-        return $this->getHeading() . PHP_EOL . $this->getText();
+        return $this->getTitle() . PHP_EOL . $this->getText();
     }
 
     /**
@@ -37,9 +37,9 @@ class Post
     /**
      * @return string
      */
-    public function getHeading(): string
+    public function getTitle(): string
     {
-        return $this->heading;
+        return $this->title;
     }
 
     /**

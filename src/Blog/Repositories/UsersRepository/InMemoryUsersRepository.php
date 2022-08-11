@@ -1,8 +1,9 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories;
+namespace Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
+use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 
@@ -26,7 +27,7 @@ class InMemoryUsersRepository implements UsersRepositoryInterface
             }
         }
         throw new UserNotFoundException(
-            'Пользователя с данным uuid: ' . (string)$uuid . ' нет'
+            'Пользователя с данным uuid: ' . $uuid . ' нет'
         );
     }
 

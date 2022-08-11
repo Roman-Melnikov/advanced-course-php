@@ -13,9 +13,16 @@
         }
     ],
     "require": {
-        "roave/security-advisories": "dev-latest",
-        "fakerphp/faker": "^1.20",
         "symfony/polyfill-uuid": "^1.26",
       "ext-pdo": "*"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.20",
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "test": "phpunit tests --testdox --colors",
+        "test-rep": "php -dxdebug.mode=coverage vendor/bin/phpunit tests --coverage-html\ncoverage_report --coverage-filter src"
     }
 }

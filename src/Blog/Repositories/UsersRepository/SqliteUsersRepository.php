@@ -1,7 +1,8 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories;
+namespace Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepository;
 
+use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Person\Name;
@@ -16,6 +17,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
     }
 
+    /**
+     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
+     * @throws UserNotFoundException
+     */
     public function get(UUID $uuid): User
     {
         $statement = $this->pdo->prepare('SELECT * FROM users WHERE uuid = :uuid');
@@ -58,7 +63,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         if (!$result) {
             throw new UserNotFoundException(
-                'Пользователя с ' . $usernameOrUUID . ' нет'
+                'Пользователя с uuid: ' . $usernameOrUUID . ' нет'
             );
         }
         return new User(

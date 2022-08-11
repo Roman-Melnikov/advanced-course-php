@@ -1,9 +1,10 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories;
+namespace Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
+use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Person\Name;
@@ -21,13 +22,13 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO posts
-                (uuid, heading, text, user_uuid)
+                (uuid, title, text, user_uuid)
                 VALUES 
-                    (:uuid, :heading, :text, :user_uuid)'
+                    (:uuid, :title, :text, :user_uuid)'
         );
         $statement->execute([
             ':uuid' => (string)$post->getUuid(),
-            ':heading' => $post->getHeading(),
+            ':title' => $post->getTitle(),
             ':text' => $post->getText(),
             ':user_uuid' => (string)$post->getAutor()->getUuid()
         ]);
@@ -53,7 +54,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
         if (!$result) {
             throw new PostNotFoundException(
-                'Поста с uuid: ' . (string)$uuid . 'нет'
+                'Поста с uuid: ' . $uuid . ' нет'
             );
         }
 
@@ -64,7 +65,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
                 new Name($result['first_name'], $result['last_name']),
                 $result['username']
             ),
-            $result['heading'],
+            $result['title'],
             $result['text']);
     }
 }

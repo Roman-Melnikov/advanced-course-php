@@ -25,7 +25,6 @@ class Arguments
     public static function fromArgv(array $argv): self
     {
         $arguments = [];
-
         foreach ($argv as $argument) {
             $parts = explode('=', $argument);
             if (count($parts) !== 2) {
@@ -45,5 +44,13 @@ class Arguments
             );
         }
         return $this->arguments[$argument];
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
     }
 }

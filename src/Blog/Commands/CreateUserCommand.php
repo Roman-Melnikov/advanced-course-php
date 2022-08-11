@@ -4,7 +4,7 @@ namespace Melni\AdvancedCoursePhp\Blog\Commands;
 
 use Melni\AdvancedCoursePhp\Blog\Exceptions\CommandException;
 use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepositoryInterface;
+use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Person\Name;

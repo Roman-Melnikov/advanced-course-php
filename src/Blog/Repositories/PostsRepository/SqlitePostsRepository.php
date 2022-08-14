@@ -2,7 +2,9 @@
 
 namespace Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository;
 
+use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Blog\Exceptions\PostNotFoundException;
+use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
@@ -36,36 +38,50 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
     /**
      * @throws PostNotFoundException
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
+     * @throws InvalidUuidException
+     * @throws UserNotFoundException
      */
     public function get(UUID $uuid): Post
     {
-        $statement = $this->pdo->prepare(
-            'SELECT *
-                    FROM posts LEFT JOIN users
-                    ON posts.user_uuid = users.uuid 
-                    WHERE posts.uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => (string)$uuid
-        ]);
+        $postStatement = $this->query('posts', $uuid);
+        $postResult = $postStatement->fetch();
 
-        $result = $statement->fetch();
-
-        if (!$result) {
+        if (!$postResult) {
             throw new PostNotFoundException(
                 'Поста с uuid: ' . $uuid . ' нет'
+            );
+        }
+
+        $userStatement = $this->query('users', new UUID($postResult['user_uuid']));
+        $userResult = $userStatement->fetch();
+
+        if (!$userResult) {
+            throw new UserNotFoundException(
+                'Пользователя с uuid: ' . $postResult['user_uuid'] . ' нет'
             );
         }
 
         return new Post(
             $uuid,
             new User(
-                new UUID($result['user_uuid']),
-                new Name($result['first_name'], $result['last_name']),
-                $result['username']
+                new UUID($postResult['user_uuid']),
+                new Name($userResult['first_name'], $userResult['last_name']),
+                $userResult['username']
             ),
-            $result['title'],
-            $result['text']);
+            $postResult['title'],
+            $postResult['text']);
+    }
+
+    private function query(string $table, UUID $uuid): \PDOStatement
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT *
+                   FROM $table
+                   WHERE $table.uuid = :uuid"
+        );
+        $statement->execute([
+            ':uuid' => (string)$uuid
+        ]);
+        return $statement;
     }
 }

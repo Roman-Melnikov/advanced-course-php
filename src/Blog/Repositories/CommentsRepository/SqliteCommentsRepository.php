@@ -4,6 +4,9 @@ namespace Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Comment;
 use Melni\AdvancedCoursePhp\Blog\Exceptions\CommentNotFoundException;
+use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
+use Melni\AdvancedCoursePhp\Blog\Exceptions\PostNotFoundException;
+use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
@@ -37,49 +40,70 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
     /**
      * @throws CommentNotFoundException
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
+     * @throws InvalidUuidException
+     * @throws PostNotFoundException
+     * @throws UserNotFoundException
      */
     public function get(UUID $uuid): Comment
     {
-        $statement = $this->pdo->prepare(
-            'SELECT *
-                    FROM users
-                    LEFT JOIN posts
-                    ON users.uuid = posts.user_uuid
-                    LEFT JOIN comments
-                    ON posts.uuid = comments.post_uuid
-                    WHERE comments.uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => (string)$uuid
-        ]);
+        $commentStatement = $this->query('comments', $uuid);
+        $commentResult = $commentStatement->fetch();
 
-        $result = $statement->fetch();
-
-        if (!$result) {
+        if (!$commentResult) {
             throw new CommentNotFoundException(
                 'Комментария с uuid: ' . $uuid . ' нет'
             );
         }
 
+        $postStatement = $this->query('posts', new UUID($commentResult['post_uuid']));
+        $postResult = $postStatement->fetch();
+
+        if (!$postResult) {
+            throw new PostNotFoundException(
+                'Поста с uuid: ' . $commentResult['post_uuid'] . ' нет'
+            );
+        }
+
+        $userStatement = $this->query('users', new UUID($commentResult['user_uuid']));
+        $userResult = $userStatement->fetch();
+
+        if (!$userResult) {
+            throw new UserNotFoundException(
+                'Пользователя с uuid: ' . $commentResult['user_uuid'] . ' нет'
+            );
+        }
+
         $user = new User(
-            new UUID($result['user_uuid']),
-            new Name($result['first_name'], $result['last_name']),
-            $result['username']
+            new UUID($commentResult['user_uuid']),
+            new Name($userResult['first_name'], $userResult['last_name']),
+            $userResult['username']
         );
 
         $post = new Post(
-            new UUID($result['post_uuid']),
+            new UUID($commentResult['post_uuid']),
             $user,
-            $result['title'],
-            $result['text']
+            $postResult['title'],
+            $postResult['text']
         );
 
         return new Comment(
             $uuid,
             $user,
             $post,
-            $result['txt']
+            $commentResult['txt']
         );
+    }
+
+    public function query(string $table, UUID $uuid): \PDOStatement
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT *
+                   FROM $table
+                   WHERE $table.uuid = :uuid"
+        );
+        $statement->execute([
+            ':uuid' => (string)$uuid
+        ]);
+        return $statement;
     }
 }

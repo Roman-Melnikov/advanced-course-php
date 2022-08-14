@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/advanced-course-php.iml" filepath="$PROJECT_DIR$/.idea/advanced-course-php.iml" />
-      <module fileurl="file://$USER_HOME$/Downloads/engine3/.idea/engine3.iml" filepath="$USER_HOME$/Downloads/engine3/.idea/engine3.iml" />
     </modules>
   </component>
 </project>

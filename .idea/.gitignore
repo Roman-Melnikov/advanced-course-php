@@ -6,3 +6,7 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# Я пробовал исключить нижеперечисленные
+/inspectionProfiles/
+/advanced-course-php.imi
+/modules.xml

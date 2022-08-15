@@ -2,8 +2,8 @@
 
 namespace Melni\AdvancedCoursePhp\UnitTests\Commands;
 
-use Melni\AdvancedCoursePhp\ArgumentsException;
 use Melni\AdvancedCoursePhp\Blog\Commands\Arguments;
+use Melni\AdvancedCoursePhp\Exceptions\ArgumentsException;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentsTest extends TestCase
@@ -17,9 +17,6 @@ class ArgumentsTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
-    /**
-     * @throws ArgumentsException
-     */
     private function argumentsProvider(): iterable
     {
         return [

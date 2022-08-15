@@ -3,17 +3,17 @@
 namespace Melni\AdvancedCoursePhp\Http\Actions\Posts;
 
 use Melni\AdvancedCoursePhp\Blog\Post;
-use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\PostsRepositoryInterface;
-use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\UUID;
-use Melni\AdvancedCoursePhp\HttpException;
-use Melni\AdvancedCoursePhp\InvalidUuidException;
-use Melni\AdvancedCoursePhp\UserNotFoundException;
+use Melni\AdvancedCoursePhp\Exceptions\HttpException;
+use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
+use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Http\Actions\ActionsInterface;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
 use Melni\AdvancedCoursePhp\Http\SuccessFulResponse;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 
 class CreatePost implements ActionsInterface
 {
@@ -24,9 +24,6 @@ class CreatePost implements ActionsInterface
     {
     }
 
-    /**
-     * @throws InvalidUuidException
-     */
     public function handle(Request $request): Response
     {
         try {

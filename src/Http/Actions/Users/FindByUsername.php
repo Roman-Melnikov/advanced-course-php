@@ -2,14 +2,14 @@
 
 namespace Melni\AdvancedCoursePhp\Http\Actions\Users;
 
-use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
-use Melni\AdvancedCoursePhp\HttpException;
-use Melni\AdvancedCoursePhp\UserNotFoundException;
+use Melni\AdvancedCoursePhp\Exceptions\HttpException;
+use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Http\Actions\ActionsInterface;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
 use Melni\AdvancedCoursePhp\Http\SuccessFulResponse;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 
 class FindByUsername implements ActionsInterface
 {

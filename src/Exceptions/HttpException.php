@@ -1,6 +1,6 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp;
+namespace Melni\AdvancedCoursePhp\Exceptions;
 
 class HttpException extends AppException
 {

@@ -2,9 +2,9 @@
 
 namespace Melni\AdvancedCoursePhp\UnitTests\Blog;
 
-use Melni\AdvancedCoursePhp\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use PHPUnit\Framework\TestCase;
 

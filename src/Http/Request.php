@@ -2,7 +2,7 @@
 
 namespace Melni\AdvancedCoursePhp\Http;
 
-use Melni\AdvancedCoursePhp\HttpException;
+use Melni\AdvancedCoursePhp\Exceptions\HttpException;
 
 class Request
 {
@@ -19,11 +19,11 @@ class Request
      */
     public function path(): string
     {
-        if (!array_key_exists('REQUEST_URL', $this->server)) {
+        if (!array_key_exists('REQUEST_URI', $this->server)) {
             throw new HttpException('Cannot get path from the request');
         }
 
-        $components = parse_url($this->server['REQUEST_URL']);
+        $components = parse_url($this->server['REQUEST_URI']);
 
         if (!is_array($components) || !array_key_exists('path', $components)) {
             throw new HttpException('Cannot get path from the request');
@@ -43,7 +43,7 @@ class Request
 
         $value = trim($this->get[$param]);
 
-        if (!empty($value)) {
+        if (empty($value)) {
             throw new HttpException('Empty query param in the request: $param');
         }
 
@@ -63,7 +63,7 @@ class Request
 
         $value = trim($this->server[$headerName]);
 
-        if (!empty($value)) {
+        if (empty($value)) {
             throw new HttpException("Empty header in the request: $header");
         }
 
@@ -117,7 +117,7 @@ class Request
 
         $value = $body[$field];
 
-        if (!empty($value)) {
+        if (empty($value)) {
             throw new HttpException("Empty field: $field");
         }
 

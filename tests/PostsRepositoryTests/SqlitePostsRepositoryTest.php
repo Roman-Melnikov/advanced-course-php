@@ -3,11 +3,12 @@
 namespace Melni\AdvancedCoursePhp\UnitTests\PostsRepositoryTests;
 
 use Melni\AdvancedCoursePhp\Blog\Post;
-use Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
-use Melni\AdvancedCoursePhp\PostNotFoundException;
+use Melni\AdvancedCoursePhp\Exceptions\AppException;
+use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
+use Melni\AdvancedCoursePhp\Repositories\PostsRepository\SqlitePostsRepository;
 use PHPUnit\Framework\TestCase;
 
 class SqlitePostsRepositoryTest extends TestCase
@@ -47,12 +48,8 @@ class SqlitePostsRepositoryTest extends TestCase
         $postRepository->save($post);
     }
 
-
     /**
-     * @throws \Melni\AdvancedCoursePhp\AppException
-     * @throws PostNotFoundException
-     * @throws \Melni\AdvancedCoursePhp\UserNotFoundException
-     * @throws \Melni\AdvancedCoursePhp\InvalidUuidException
+     * @throws AppException
      */
     public function testItGetPostByUuid(): void
     {
@@ -77,9 +74,7 @@ class SqlitePostsRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\AppException
-     * @throws \Melni\AdvancedCoursePhp\InvalidUuidException
-     * @throws \Melni\AdvancedCoursePhp\UserNotFoundException
+     * @throws AppException
      */
     public function testItThrowAnExceptionWhenPostNotFound(): void
     {

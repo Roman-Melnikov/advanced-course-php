@@ -1,16 +1,15 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository;
+namespace Melni\AdvancedCoursePhp\Repositories\PostsRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Post;
-use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
-use Melni\AdvancedCoursePhp\AppException;
-use Melni\AdvancedCoursePhp\InvalidUuidException;
-use Melni\AdvancedCoursePhp\PostNotFoundException;
-use Melni\AdvancedCoursePhp\UserNotFoundException;
+use Melni\AdvancedCoursePhp\Exceptions\AppException;
+use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
+use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
 {
@@ -38,9 +37,6 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     }
 
     /**
-     * @throws PostNotFoundException
-     * @throws UserNotFoundException
-     * @throws InvalidUuidException
      * @throws AppException
      */
     public function get(UUID $uuid): Post
@@ -57,7 +53,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             'users',
             $userUuid,
             new UserNotFoundException('Пользователя с uuid: ' . $postResult['user_uuid'] . ' нет')
-            );
+        );
 
         return new Post(
             $uuid,
@@ -71,13 +67,11 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     }
 
     /**
-     * @throws PostNotFoundException
-     * @throws UserNotFoundException
      * @throws AppException
      */
     private function query(
-        string $table,
-        UUID   $uuid,
+        string       $table,
+        UUID         $uuid,
         AppException $exceptionName
     ): array
     {
@@ -97,5 +91,20 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function remove(UUID $uuid): void
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE
+                   FROM posts
+                   WHERE uuid = :uuid'
+        );
+        $statement->execute([
+            ':uuid' => $uuid
+        ]);
     }
 }

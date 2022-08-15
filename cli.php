@@ -1,9 +1,8 @@
 <?php
 
-use Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
-use Melni\AdvancedCoursePhp\Blog\{Repositories\UsersRepository\SqliteUsersRepository, UUID};
-use Melni\AdvancedCoursePhp\AppException;
-use Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use Melni\AdvancedCoursePhp\Blog\{UUID};
+use Melni\AdvancedCoursePhp\Exceptions\AppException;
+use Melni\AdvancedCoursePhp\Repositories\CommentsRepository\SqliteCommentsRepository;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -11,8 +10,8 @@ $faker = Faker\Factory::create('ru_RU');
 
 $pdo = require 'db.php';
 try {
-    $usersRepository = new SqliteUsersRepository($pdo);
-    $user = $usersRepository->get(new UUID('104e8613-b7b2-4cb9-8296-56a765033ff9'));
+//    $usersRepository = new SqliteUsersRepository($pdo);
+//    $user = $usersRepository->get(new UUID('104e8613-b7b2-4cb9-8296-56a765033ff9'));
 //    print_r($user);//
 //
 //    $command = new CreateUserCommand($usersRepository);
@@ -44,9 +43,9 @@ try {
 //    $post = $postsRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
 //    print_r($post);
 
-//    $commentsRepository = new SqliteCommentsRepository($pdo);
-//    $comment = $commentsRepository->get(new UUID('996a1126-7ef8-4b88-ac9b-32511c3a0384'));
-//    print_r($comment);
+    $commentsRepository = new SqliteCommentsRepository($pdo);
+    $comment = $commentsRepository->get(new UUID('996a1126-7ef8-4b88-ac9b-32511c3a0384'));
+    print_r($comment);
 
 } catch (AppException $exception) {
     echo $exception->getMessage();

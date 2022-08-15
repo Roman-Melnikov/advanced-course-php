@@ -1,6 +1,6 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces;
+namespace Melni\AdvancedCoursePhp\Repositories\Interfaces;
 
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;

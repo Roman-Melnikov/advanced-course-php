@@ -16,7 +16,7 @@ class User
 
     public function __toString(): string
     {
-        return $this->getName() . ' ' . $this->getUsername();
+        return $this->getName();
     }
 
     /**

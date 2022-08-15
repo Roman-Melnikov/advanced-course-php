@@ -3,7 +3,7 @@
 namespace Melni\AdvancedCoursePhp\Blog;
 
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
+use Melni\AdvancedCoursePhp\InvalidUuidException;
 
 class UUID
 {

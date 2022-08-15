@@ -2,11 +2,11 @@
 
 namespace Melni\AdvancedCoursePhp\UnitTests\CommentsRepositoryTests;
 
-use Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
+use Melni\AdvancedCoursePhp\CommentNotFoundException;
+use Melni\AdvancedCoursePhp\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Blog\Comment;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\CommentNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Blog\Post;
+use Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Person\Name;
@@ -57,7 +57,9 @@ class SqliteCommentsRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\CommentNotFoundException
+     * @throws CommentNotFoundException
+     * @throws \Melni\AdvancedCoursePhp\PostNotFoundException
+     * @throws \Melni\AdvancedCoursePhp\UserNotFoundException
      * @throws InvalidUuidException
      */
     public function testItGetCommentByUuid(): void
@@ -85,7 +87,9 @@ class SqliteCommentsRepositoryTest extends TestCase
     }
 
     /**
+     * @throws \Melni\AdvancedCoursePhp\UserNotFoundException
      * @throws InvalidUuidException
+     * @throws \Melni\AdvancedCoursePhp\PostNotFoundException
      */
     public function testItThrowAnExceptionWhenCommentNotFound(): void
     {

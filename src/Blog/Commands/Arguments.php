@@ -3,7 +3,7 @@
 namespace Melni\AdvancedCoursePhp\Blog\Commands;
 
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\ArgumentsException;
+use Melni\AdvancedCoursePhp\ArgumentsException;
 
 class Arguments
 {

@@ -2,10 +2,10 @@
 
 namespace Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepository;
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 
 class InMemoryUsersRepository implements UsersRepositoryInterface
 {

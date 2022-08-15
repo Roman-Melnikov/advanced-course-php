@@ -2,11 +2,11 @@
 
 namespace Melni\AdvancedCoursePhp\Blog\Commands;
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\CommandException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\CommandException;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 
 class CreateUserCommand
@@ -18,7 +18,6 @@ class CreateUserCommand
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\ArgumentsException
      * @throws CommandException
      */
     public function handle(Arguments $arguments): void

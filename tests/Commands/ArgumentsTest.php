@@ -2,8 +2,8 @@
 
 namespace Melni\AdvancedCoursePhp\UnitTests\Commands;
 
+use Melni\AdvancedCoursePhp\ArgumentsException;
 use Melni\AdvancedCoursePhp\Blog\Commands\Arguments;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\ArgumentsException;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentsTest extends TestCase

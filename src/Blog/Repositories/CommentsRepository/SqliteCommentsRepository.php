@@ -3,14 +3,14 @@
 namespace Melni\AdvancedCoursePhp\Blog\Repositories\CommentsRepository;
 
 use Melni\AdvancedCoursePhp\Blog\Comment;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\CommentNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\PostNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\CommentNotFoundException;
+use Melni\AdvancedCoursePhp\InvalidUuidException;
+use Melni\AdvancedCoursePhp\PostNotFoundException;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 
 class SqliteCommentsRepository implements CommentsRepositoryInterface
@@ -19,7 +19,6 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         private \PDO $pdo
     )
     {
-
     }
 
     public function save(Comment $comment): void
@@ -40,8 +39,8 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
     /**
      * @throws CommentNotFoundException
-     * @throws InvalidUuidException
      * @throws PostNotFoundException
+     * @throws InvalidUuidException
      * @throws UserNotFoundException
      */
     public function get(UUID $uuid): Comment
@@ -94,7 +93,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         );
     }
 
-    public function query(string $table, UUID $uuid): \PDOStatement
+    private function query(string $table, UUID $uuid): \PDOStatement
     {
         $statement = $this->pdo->prepare(
             "SELECT *

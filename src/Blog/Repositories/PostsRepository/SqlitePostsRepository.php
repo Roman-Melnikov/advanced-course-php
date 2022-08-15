@@ -2,13 +2,14 @@
 
 namespace Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository;
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\PostNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\AppException;
+use Melni\AdvancedCoursePhp\InvalidUuidException;
+use Melni\AdvancedCoursePhp\PostNotFoundException;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
@@ -38,33 +39,30 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
     /**
      * @throws PostNotFoundException
-     * @throws InvalidUuidException
      * @throws UserNotFoundException
+     * @throws InvalidUuidException
+     * @throws AppException
      */
     public function get(UUID $uuid): Post
     {
-        $postStatement = $this->query('posts', $uuid);
-        $postResult = $postStatement->fetch();
+        $postResult = $this->query(
+            'posts',
+            $uuid,
+            new PostNotFoundException("Поста с uuid: $uuid нет")
+        );
 
-        if (!$postResult) {
-            throw new PostNotFoundException(
-                'Поста с uuid: ' . $uuid . ' нет'
+        $userUuid = new UUID($postResult['user_uuid']);
+
+        $userResult = $this->query(
+            'users',
+            $userUuid,
+            new UserNotFoundException('Пользователя с uuid: ' . $postResult['user_uuid'] . ' нет')
             );
-        }
-
-        $userStatement = $this->query('users', new UUID($postResult['user_uuid']));
-        $userResult = $userStatement->fetch();
-
-        if (!$userResult) {
-            throw new UserNotFoundException(
-                'Пользователя с uuid: ' . $postResult['user_uuid'] . ' нет'
-            );
-        }
 
         return new Post(
             $uuid,
             new User(
-                new UUID($postResult['user_uuid']),
+                $userUuid,
                 new Name($userResult['first_name'], $userResult['last_name']),
                 $userResult['username']
             ),
@@ -72,7 +70,16 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             $postResult['text']);
     }
 
-    private function query(string $table, UUID $uuid): \PDOStatement
+    /**
+     * @throws PostNotFoundException
+     * @throws UserNotFoundException
+     * @throws AppException
+     */
+    private function query(
+        string $table,
+        UUID   $uuid,
+        AppException $exceptionName
+    ): array
     {
         $statement = $this->pdo->prepare(
             "SELECT *
@@ -82,6 +89,13 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         $statement->execute([
             ':uuid' => (string)$uuid
         ]);
-        return $statement;
+
+        $result = $statement->fetch();
+
+        if (!$result) {
+            throw $exceptionName;
+        }
+
+        return $result;
     }
 }

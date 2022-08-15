@@ -5,8 +5,9 @@ namespace Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepository;
 use Melni\AdvancedCoursePhp\Blog\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\InvalidUuidException;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
 
 class SqliteUsersRepository implements UsersRepositoryInterface
 {
@@ -14,11 +15,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         private \PDO $pdo
     )
     {
-
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
+     * @throws InvalidUuidException
      * @throws UserNotFoundException
      */
     public function get(UUID $uuid): User
@@ -45,6 +45,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         ]);
     }
 
+    /**
+     * @throws InvalidUuidException
+     * @throws UserNotFoundException
+     */
     public function getByUsername(string $username): User
     {
         $statement = $this->pdo->prepare('SELECT * FROM users WHERE username = :username');
@@ -54,8 +58,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
+     * @throws InvalidUuidException
      * @throws UserNotFoundException
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
      */
     private function getUser(\PDOStatement $statement, string $usernameOrUUID): User
     {

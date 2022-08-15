@@ -2,9 +2,7 @@
 
 namespace Melni\AdvancedCoursePhp\UnitTests\UsersRepositoryTests;
 
-use Melni\AdvancedCoursePhp\Blog\Exceptions\UserNotFoundException;
-use Melni\AdvancedCoursePhp\Blog\Post;
-use Melni\AdvancedCoursePhp\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use Melni\AdvancedCoursePhp\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
@@ -42,8 +40,8 @@ class SqliteUsersRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
      * @throws UserNotFoundException
+     * @throws \Melni\AdvancedCoursePhp\InvalidUuidException
      */
     public function testItGetUserByUuid(): void
     {
@@ -66,7 +64,7 @@ class SqliteUsersRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Melni\AdvancedCoursePhp\Blog\Exceptions\InvalidUuidException
+     * @throws \Melni\AdvancedCoursePhp\InvalidUuidException
      */
     public function testItThrowAnExceptionWhenUserNotFound(): void
     {

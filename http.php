@@ -1,53 +1,31 @@
 <?php
 
 use Melni\AdvancedCoursePhp\Http\Actions\Users\FindByUsername;
-use Melni\AdvancedCoursePhp\Repositories\UsersRepository\SqliteUsersRepository;
 use Melni\AdvancedCoursePhp\Http\Actions\Posts\FindByUuidPost;
-use Melni\AdvancedCoursePhp\Repositories\PostsRepository\SqlitePostsRepository;
 use Melni\AdvancedCoursePhp\Http\Actions\Posts\CreatePost;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\CreateComment;
-use Melni\AdvancedCoursePhp\Repositories\CommentsRepository\SqliteCommentsRepository;
 use Melni\AdvancedCoursePhp\Http\Actions\Posts\RemovePost;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\FindByUuidComment;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\RemoveComment;
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-$pdo = require 'db.php';
+$container = require __DIR__ . '/bootstrap.php';
 
 $routes = [
     'GET' => [
-        '/users/show' => new FindByUsername(
-            new SqliteUsersRepository($pdo)
-        ),
-        '/posts/show' => new FindByUuidPost(
-            new SqlitePostsRepository($pdo)
-        ),
-        '/comments/show' => new FindByUuidComment(
-            new SqliteCommentsRepository($pdo)
-        )
+        '/users/show' => FindByUsername::class,
+        '/posts/show' => FindByUuidPost::class,
+        '/comments/show' => FindByUuidComment::class
     ],
     'POST' => [
-        '/posts/create' => new CreatePost(
-            new SqlitePostsRepository($pdo),
-            new SqliteUsersRepository($pdo)
-        ),
-        '/comments/create' => new CreateComment(
-            new SqliteCommentsRepository($pdo),
-            new SqlitePostsRepository($pdo),
-            new SqliteUsersRepository($pdo)
-        ),
+        '/posts/create' => CreatePost::class,
+        '/comments/create' => CreateComment::class,
     ],
     'DELETE' => [
-        '/posts' => new RemovePost(
-            new SqlitePostsRepository($pdo)
-        ),
-        '/comments' => new RemoveComment(
-            new SqliteCommentsRepository($pdo)
-        ),
+        '/posts' => RemovePost::class,
+        '/comments' => RemoveComment::class,
     ],
 ];
 
@@ -75,7 +53,9 @@ if (!array_key_exists($path, $routes[$method])) {
     return;
 }
 
-$action = $routes[$method][$path];
+$actionClassName = $routes[$method][$path];
+
+$action = $container->get($actionClassName);
 
 $response = $action->handle($request);
 

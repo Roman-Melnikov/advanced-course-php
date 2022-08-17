@@ -6,6 +6,11 @@
             "Melni\\AdvancedCoursePhp\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Melni\\AdvancedCoursePhp\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Roman",
@@ -15,7 +20,8 @@
     "require": {
         "symfony/polyfill-uuid": "^1.26",
       "ext-pdo": "*",
-      "ext-mbstring": "*"
+      "ext-mbstring": "*",
+        "psr/container": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.20",

@@ -9,6 +9,8 @@ use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\CommentsRepository\SqliteCommentsRepository;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\LikesRepository\SqlitePostsLikesRepository;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsLikesRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\LikesRepository\SqliteCommentsLikesRepository;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -32,6 +34,11 @@ $container->bind(
 $container->bind(
     PostsLikesRepositoryInterface::class,
     SqlitePostsLikesRepository::class
+);
+
+$container->bind(
+    CommentsLikesRepositoryInterface::class,
+    SqliteCommentsLikesRepository::class
 );
 
 $container->bind(

@@ -2,7 +2,7 @@
 
 namespace Melni\AdvancedCoursePhp\Http\Actions\Likes;
 
-use Melni\AdvancedCoursePhp\Blog\Like;
+use Melni\AdvancedCoursePhp\Blog\Likes\CommentLike;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\AppException;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
@@ -12,16 +12,15 @@ use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
 use Melni\AdvancedCoursePhp\Http\SuccessFulResponse;
-use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
-use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsLikesRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 
-class CreateLike implements ActionsInterface
+class CreateCommentLike implements ActionsInterface
 {
-
     public function __construct(
-        private PostsLikesRepositoryInterface $likesRepository,
-        private PostsRepositoryInterface      $postsRepository,
+        private CommentsLikesRepositoryInterface $likesRepository,
+        private CommentsRepositoryInterface      $commentsRepository,
         private UsersRepositoryInterface      $usersRepository
     )
     {
@@ -30,30 +29,30 @@ class CreateLike implements ActionsInterface
     public function handle(Request $request): Response
     {
         try {
-            $postUuid = $request->JsonBodyField('post_uuid');
+            $commentUuid = $request->JsonBodyField('comment_uuid');
             $userUuid = $request->JsonBodyField('user_uuid');
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
-            $this->likesRepository->checkUserLikeForPostExists($postUuid, $userUuid);
+            $this->likesRepository->checkUserLikeForCommentExists($commentUuid, $userUuid);
         } catch (LikeAlreadyExists $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
             $newLikeUuid = UUID::random();
-            $post = $this->postsRepository->get(new UUID($postUuid));
+            $comment = $this->commentsRepository->get(new UUID($commentUuid));
             $user = $this->usersRepository->get(new UUID($userUuid));
         } catch (AppException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
-        $like = new Like(
+        $like = new CommentLike(
             $newLikeUuid,
-            $post,
-            $user
+            $user,
+            $comment
         );
 
         $this->likesRepository->save($like);

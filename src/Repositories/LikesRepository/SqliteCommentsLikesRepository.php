@@ -6,11 +6,10 @@ use Melni\AdvancedCoursePhp\Blog\Likes\Like;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\LikeAlreadyExists;
 use Melni\AdvancedCoursePhp\Exceptions\LikeNotFoundException;
-use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsLikesRepositoryInterface;
 
-class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
+class SqliteCommentsLikesRepository implements CommentsLikesRepositoryInterface
 {
-
     public function __construct(
         private \PDO $pdo
     )
@@ -20,15 +19,15 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
     public function save(Like $like): void
     {
         $statement = $this->pdo->prepare(
-            'INSERT INTO postsLikes
-                       (uuid, post_uuid, user_uuid)
+            'INSERT INTO commentsLikes
+                       (uuid, comment_uuid, user_uuid)
                     VALUES 
-                       (:uuid, :post_uuid, :user_uuid)'
+                       (:uuid, :comment_uuid, :user_uuid)'
         );
         $statement->execute(
             [
                 ':uuid' => $like,
-                'post_uuid' => $like->getPost()->getUuid(),
+                'comment_uuid' => $like->getComment()->getUuid(),
                 'user_uuid' => $like->getUser()->getUuid()
             ]
         );
@@ -37,12 +36,12 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
     /**
      * @throws LikeNotFoundException
      */
-    public function getByPostUuid(UUID $uuid): array
+    public function getByCommentUuid(UUID $uuid): array
     {
         $statement = $this->pdo->prepare(
             'SELECT *
-            FROM postsLikes
-            WHERE post_uuid = :uuid'
+            FROM commentsLikes
+            WHERE comment_uuid = :uuid'
         );
         $statement->execute([':uuid' => $uuid]);
 
@@ -50,7 +49,7 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
 
         if (!$result) {
             throw new LikeNotFoundException(
-                'No likes to this post: ' . $uuid
+                'No likes to this comment: ' . $uuid
             );
         }
 
@@ -60,18 +59,18 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
     /**
      * @throws LikeAlreadyExists
      */
-    public function checkUserLikeForPostExists($postUuid, $userUuid): void
+    public function checkUserLikeForCommentExists($commentUuid, $userUuid): void
     {
         $statement = $this->pdo->prepare(
             'SELECT *
-            FROM postsLikes
+            FROM commentsLikes
             WHERE 
-                post_uuid = :postUuid AND user_uuid = :userUuid'
+                comment_uuid = :commentUuid AND user_uuid = :userUuid'
         );
 
         $likeExists = $statement->execute(
             [
-                ':postUuid' => $postUuid,
+                ':commentUuid' => $commentUuid,
                 ':userUuid' => $userUuid
             ]
         );
@@ -80,7 +79,7 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
 
         if ($isExisted) {
             throw new LikeAlreadyExists(
-                'The users like for this post already exists'
+                'The users like for this comment already exists'
             );
         }
     }
@@ -89,7 +88,7 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
     {
         $statement = $this->pdo->prepare(
             'DELETE
-                   FROM postsLikes
+                   FROM commentsLikes
                    WHERE uuid = :uuid'
         );
         $statement->execute([

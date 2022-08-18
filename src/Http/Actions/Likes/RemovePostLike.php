@@ -11,7 +11,7 @@ use Melni\AdvancedCoursePhp\Http\Response;
 use Melni\AdvancedCoursePhp\Http\SuccessFulResponse;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
 
-class RemoveLike implements ActionsInterface
+class RemovePostLike implements ActionsInterface
 {
 
     public function __construct(

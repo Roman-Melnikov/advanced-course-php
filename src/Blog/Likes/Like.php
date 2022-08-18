@@ -1,12 +1,14 @@
 <?php
 
-namespace Melni\AdvancedCoursePhp\Blog;
+namespace Melni\AdvancedCoursePhp\Blog\Likes;
+
+use Melni\AdvancedCoursePhp\Blog\User;
+use Melni\AdvancedCoursePhp\Blog\UUID;
 
 class Like
 {
     public function __construct(
         private UUID $uuid,
-        private Post $post,
         private User $user
     )
     {
@@ -21,14 +23,6 @@ class Like
     }
 
     /**
-     * @return Post
-     */
-    public function getPost(): Post
-    {
-        return $this->post;
-    }
-
-    /**
      * @return User
      */
     public function getUser(): User
@@ -38,6 +32,6 @@ class Like
 
     public function __toString(): string
     {
-        return (string)$this->getUuid();
+        return $this->getUuid();
     }
 }

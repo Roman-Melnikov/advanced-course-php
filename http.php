@@ -10,8 +10,10 @@ use Melni\AdvancedCoursePhp\Http\Actions\Comments\CreateComment;
 use Melni\AdvancedCoursePhp\Http\Actions\Posts\RemovePost;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\FindByUuidComment;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\RemoveComment;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreateLike;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemoveLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreatePostLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemovePostLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreateCommentLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemoveCommentLike;
 
 $container = require __DIR__ . '/bootstrap.php';
 
@@ -24,12 +26,14 @@ $routes = [
     'POST' => [
         '/posts/create' => CreatePost::class,
         '/comments/create' => CreateComment::class,
-        '/likes/create' => CreateLike::class,
+        '/postLikes/create' => CreatePostLike::class,
+        '/commentLikes/create' => CreateCommentLike::class,
     ],
     'DELETE' => [
         '/posts' => RemovePost::class,
         '/comments' => RemoveComment::class,
-        '/likes' => RemoveLike::class,
+        '/postLikes' => RemovePostLike::class,
+        '/commentLikes' => RemoveCommentLike::class,
     ],
 ];
 

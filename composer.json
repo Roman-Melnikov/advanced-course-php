@@ -8,7 +8,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Melni\\AdvancedCoursePhp\\": "tests/"
+            "Melni\\AdvancedCoursePhp\\UnitTests\\": "tests/"
         }
     },
     "authors": [

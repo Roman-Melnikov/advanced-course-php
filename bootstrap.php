@@ -7,6 +7,8 @@ use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\PostsRepository\SqlitePostsRepository;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\CommentsRepository\SqliteCommentsRepository;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\LikesRepository\SqlitePostsLikesRepository;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -28,8 +30,13 @@ $container->bind(
 );
 
 $container->bind(
+    PostsLikesRepositoryInterface::class,
+    SqlitePostsLikesRepository::class
+);
+
+$container->bind(
     \PDO::class,
-    new PDO(
+    new \PDO(
         'sqlite:blog.sqlite',
         null,
         null,

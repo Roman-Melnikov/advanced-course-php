@@ -59,7 +59,7 @@ class SqliteCommentsLikesRepository implements CommentsLikesRepositoryInterface
     /**
      * @throws LikeAlreadyExists
      */
-    public function checkUserLikeForCommentExists($commentUuid, $userUuid): void
+    public function checkUserLikeForCommentExists(string $commentUuid, string $userUuid): void
     {
         $statement = $this->pdo->prepare(
             'SELECT *
@@ -68,7 +68,7 @@ class SqliteCommentsLikesRepository implements CommentsLikesRepositoryInterface
                 comment_uuid = :commentUuid AND user_uuid = :userUuid'
         );
 
-        $likeExists = $statement->execute(
+        $statement->execute(
             [
                 ':commentUuid' => $commentUuid,
                 ':userUuid' => $userUuid

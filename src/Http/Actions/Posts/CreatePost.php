@@ -4,22 +4,26 @@ namespace Melni\AdvancedCoursePhp\Http\Actions\Posts;
 
 use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\UUID;
+use Melni\AdvancedCoursePhp\Exceptions\AuthException;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
 use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Http\Actions\ActionsInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
 use Melni\AdvancedCoursePhp\Http\SuccessFulResponse;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class CreatePost implements ActionsInterface
 {
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
-        private UsersRepositoryInterface $usersRepository
+        private IdentificationInterface  $identification,
+        private LoggerInterface          $logger
     )
     {
     }
@@ -27,14 +31,8 @@ class CreatePost implements ActionsInterface
     public function handle(Request $request): Response
     {
         try {
-            $authorUuid = new UUID($request->JsonBodyField('author_uuid'));
-        } catch (HttpException|InvalidUuidException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-
-        try {
-            $user = $this->usersRepository->get($authorUuid);
-        } catch (UserNotFoundException $e) {
+            $user = $this->identification->user($request);
+        } catch (AuthException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
@@ -52,6 +50,8 @@ class CreatePost implements ActionsInterface
         }
 
         $this->postsRepository->save($post);
+
+        $this->logger->info("Post created: $newPostUuid");
 
         return new SuccessFulResponse(
             ['uuid' => (string)$newPostUuid]

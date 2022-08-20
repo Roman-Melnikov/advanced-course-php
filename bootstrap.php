@@ -11,8 +11,39 @@ use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterfac
 use Melni\AdvancedCoursePhp\Repositories\LikesRepository\SqlitePostsLikesRepository;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsLikesRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\LikesRepository\SqliteCommentsLikesRepository;
+use Dotenv\Dotenv;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Psr\Log\LoggerInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\JsonBodyUsernameIdentification;
 
 require_once __DIR__ . '/vendor/autoload.php';
+
+Dotenv::createImmutable(__DIR__)->safeLoad();
+
+$logger = (new Logger('blog'));
+
+if ('yes' === $_SERVER['LOG_TO_FILE']) {
+    $logger
+        ->pushHandler(
+            new StreamHandler(
+                __DIR__ . '/logs/blog.log'
+            )
+        )
+        ->pushHandler(
+            new StreamHandler(
+                __DIR__ . '/logs/blog.error.log'
+            )
+        );
+}
+
+if ('yes' === $_SERVER['LOG_TO_CONSOLE']) {
+    $logger
+        ->pushHandler(
+            new StreamHandler('php://stdout')
+        );
+}
 
 $container = new DIContainer();
 
@@ -42,15 +73,25 @@ $container->bind(
 );
 
 $container->bind(
+    IdentificationInterface::class,
+    JsonBodyUsernameIdentification::class
+);
+
+$container->bind(
     \PDO::class,
     new \PDO(
-        'sqlite:blog.sqlite',
+        $_SERVER['SQLITE_DB_PATH'],
         null,
         null,
         [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]
     )
+);
+
+$container->bind(
+    LoggerInterface::class,
+    $logger
 );
 
 return $container;

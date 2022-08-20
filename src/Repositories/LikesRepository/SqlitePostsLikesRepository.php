@@ -60,7 +60,7 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
     /**
      * @throws LikeAlreadyExists
      */
-    public function checkUserLikeForPostExists($postUuid, $userUuid): void
+    public function checkUserLikeForPostExists(string $postUuid, string $userUuid): void
     {
         $statement = $this->pdo->prepare(
             'SELECT *
@@ -69,7 +69,7 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
                 post_uuid = :postUuid AND user_uuid = :userUuid'
         );
 
-        $likeExists = $statement->execute(
+        $statement->execute(
             [
                 ':postUuid' => $postUuid,
                 ':userUuid' => $userUuid

@@ -20,19 +20,19 @@ class JsonBodyUuidIdentification implements IdentificationInterface
     }
 
     /**
-     * @throws AuthException|InvalidUuidException
+     * @throws AuthException
      */
     public function user(Request $request): User
     {
         try {
             $uuid = new UUID($request->JsonBodyField('user_uuid'));
-        } catch (HttpException $e) {
+        } catch (HttpException|InvalidUuidException $e) {
             throw new AuthException($e->getMessage());
         }
 
         try {
             return $this->repository->get($uuid);
-        } catch (UserNotFoundException|InvalidUuidException $e) {
+        } catch (UserNotFoundException $e) {
             throw new AuthException($e->getMessage());
         }
     }

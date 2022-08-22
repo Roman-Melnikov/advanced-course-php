@@ -9,6 +9,7 @@ use Melni\AdvancedCoursePhp\Exceptions\AppException;
 use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\PostsRepository\SqlitePostsRepository;
+use Melni\AdvancedCoursePhp\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 
 class SqlitePostsRepositoryTest extends TestCase
@@ -30,7 +31,7 @@ class SqlitePostsRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $postRepository = new SqlitePostsRepository($connectionStub);
+        $postRepository = new SqlitePostsRepository($connectionStub, new DummyLogger());
 
         $user = new User(
             new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'),
@@ -67,7 +68,7 @@ class SqlitePostsRepositoryTest extends TestCase
             'text' => 'text'
         ]);
 
-        $postRepository = new SqlitePostsRepository($connectionStub);
+        $postRepository = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $post = $postRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
 
         $this->assertSame('9dba7ab0-93be-4ff4-9699-165320c97694', (string)$post->getUuid());
@@ -85,9 +86,9 @@ class SqlitePostsRepositoryTest extends TestCase
         $statementMock->method('fetch')->willReturn(false);
 
         $this->expectException(PostNotFoundException::class);
-        $this->expectExceptionMessage('Поста с uuid: 9dba7ab0-93be-4ff4-9699-165320c97694 нет');
+        $this->expectExceptionMessage('No post: 9dba7ab0-93be-4ff4-9699-165320c97694');
 
-        $postRepository = new SqlitePostsRepository($connectionStub);
+        $postRepository = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $postRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
     }
 }

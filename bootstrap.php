@@ -24,7 +24,7 @@ Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $logger = (new Logger('blog'));
 
-if ('yes' === $_SERVER['LOG_TO_FILE']) {
+if ('yes' === $_SERVER['LOG_TO_FILES']) {
     $logger
         ->pushHandler(
             new StreamHandler(
@@ -33,7 +33,9 @@ if ('yes' === $_SERVER['LOG_TO_FILE']) {
         )
         ->pushHandler(
             new StreamHandler(
-                __DIR__ . '/logs/blog.error.log'
+                __DIR__ . '/logs/blog.error.log',
+                level: Logger::ERROR,
+                bubble: false
             )
         );
 }

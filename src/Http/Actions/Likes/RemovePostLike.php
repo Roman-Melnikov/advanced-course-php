@@ -30,7 +30,7 @@ class RemovePostLike implements ActionsInterface
         }
 
         return new SuccessFulResponse(
-            ['data' => 'likes ' . $uuid . ' deleted successfully']
+            ['action' => 'likes ' . $uuid . ' deleted successfully']
         );
     }
 }

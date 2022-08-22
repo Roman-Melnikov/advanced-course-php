@@ -6,7 +6,9 @@ use Melni\AdvancedCoursePhp\Container\DIContainer;
 use Melni\AdvancedCoursePhp\Container\NotFoundException;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 use Melni\AdvancedCoursePhp\Repositories\UsersRepository\SqliteUsersRepository;
+use Melni\AdvancedCoursePhp\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class DIContainerTest extends TestCase
 {
@@ -45,6 +47,11 @@ class DIContainerTest extends TestCase
         $container->bind(
             \PDO::class,
             $this->createStub(\PDO::class)
+        );
+
+        $container->bind(
+            LoggerInterface::class,
+            new DummyLogger()
         );
 
         $actual = $container->get(UsersRepositoryInterface::class);

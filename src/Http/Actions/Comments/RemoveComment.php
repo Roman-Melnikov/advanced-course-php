@@ -30,7 +30,7 @@ class RemoveComment implements ActionsInterface
         }
 
         return new SuccessFulResponse(
-            ['data' => 'comment ' . $uuid . ' deleted successfully']
+            ['action' => 'comment ' . $uuid . ' deleted successfully']
         );
     }
 }

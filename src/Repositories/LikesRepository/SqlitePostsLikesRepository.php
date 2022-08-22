@@ -7,12 +7,14 @@ use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\LikeAlreadyExists;
 use Melni\AdvancedCoursePhp\Exceptions\LikeNotFoundException;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsLikesRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
 {
 
     public function __construct(
-        private \PDO $pdo
+        private \PDO            $pdo,
+        private LoggerInterface $logger
     )
     {
     }
@@ -32,6 +34,8 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
                 'user_uuid' => $like->getUser()->getUuid()
             ]
         );
+
+        $this->logger->info("Like created: $like");
     }
 
     /**
@@ -49,9 +53,10 @@ class SqlitePostsLikesRepository implements PostsLikesRepositoryInterface
         $result = $statement->fetchAll();
 
         if (!$result) {
-            throw new LikeNotFoundException(
-                'No likes to this post: ' . $uuid
-            );
+            $message = 'No likes to this post: ' . $uuid;
+
+            $this->logger->warning($message);
+            throw new LikeNotFoundException($message);
         }
 
         return $result;

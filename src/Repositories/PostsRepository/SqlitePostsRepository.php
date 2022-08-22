@@ -6,15 +6,18 @@ use Melni\AdvancedCoursePhp\Blog\Post;
 use Melni\AdvancedCoursePhp\Blog\User;
 use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\AppException;
+use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\PostsRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
 {
     public function __construct(
-        private \PDO $pdo
+        private \PDO            $pdo,
+        private LoggerInterface $logger
     )
     {
 
@@ -34,25 +37,33 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             ':text' => $post->getText(),
             ':user_uuid' => (string)$post->getAutor()->getUuid()
         ]);
+
+        $this->logger->info("Post created: {$post->getUuid()}");
     }
 
     /**
-     * @throws AppException
+     * @throws PostNotFoundException
+     * @throws InvalidUuidException
      */
     public function get(UUID $uuid): Post
     {
         $postResult = $this->query(
             'posts',
             $uuid,
-            new PostNotFoundException("Поста с uuid: $uuid нет")
         );
+
+        if (!$postResult) {
+            $message = "No post: $uuid";
+
+            $this->logger->warning($message);
+            throw new PostNotFoundException($message);
+        }
 
         $userUuid = new UUID($postResult['user_uuid']);
 
         $userResult = $this->query(
             'users',
             $userUuid,
-            new UserNotFoundException('Пользователя с uuid: ' . $postResult['user_uuid'] . ' нет')
         );
 
         return new Post(
@@ -66,14 +77,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             $postResult['text']);
     }
 
-    /**
-     * @throws AppException
-     */
-    private function query(
-        string       $table,
-        UUID         $uuid,
-        AppException $exceptionName
-    ): array
+    private function query(string $table, UUID $uuid,): ?array
     {
         $statement = $this->pdo->prepare(
             "SELECT *
@@ -84,18 +88,9 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             ':uuid' => (string)$uuid
         ]);
 
-        $result = $statement->fetch();
-
-        if (!$result) {
-            throw $exceptionName;
-        }
-
-        return $result;
+        return $statement->fetch() ?: null;
     }
 
-    /**
-     * @throws AppException
-     */
     public function remove(UUID $uuid): void
     {
         $statement = $this->pdo->prepare(

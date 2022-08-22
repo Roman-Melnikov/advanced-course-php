@@ -23,7 +23,6 @@ class CreatePost implements ActionsInterface
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
         private IdentificationInterface  $identification,
-        private LoggerInterface          $logger
     )
     {
     }
@@ -50,8 +49,6 @@ class CreatePost implements ActionsInterface
         }
 
         $this->postsRepository->save($post);
-
-        $this->logger->info("Post created: $newPostUuid");
 
         return new SuccessFulResponse(
             ['uuid' => (string)$newPostUuid]

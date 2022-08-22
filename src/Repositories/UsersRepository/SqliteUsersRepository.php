@@ -8,11 +8,13 @@ use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class SqliteUsersRepository implements UsersRepositoryInterface
 {
     public function __construct(
-        private \PDO $pdo
+        private \PDO            $pdo,
+        private LoggerInterface $logger
     )
     {
     }
@@ -43,6 +45,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             ':firstName' => $user->getName()->getFirstName(),
             ':lastName' => $user->getName()->getLastName()
         ]);
+
+        $this->logger->info("User created: {$user->getUuid()}");
     }
 
     /**
@@ -66,14 +70,27 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $result = $statement->fetch();
 
         if (!$result) {
-            throw new UserNotFoundException(
-                'Пользователя с uuid: ' . $usernameOrUUID . ' нет'
-            );
+            $message = 'No user: ' . $usernameOrUUID;
+
+            $this->logger->warning($message);
+            throw new UserNotFoundException($message);
         }
         return new User(
             new UUID($result['uuid']),
             new Name($result['first_name'], $result['last_name']),
             $result['username']
         );
+    }
+
+    public function remove(UUID $uuid): void
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE
+            FROM users 
+            WHERE uuid = :uuid'
+        );
+
+        $statement->execute([':uuid' => (string)$uuid]);
+        $this->logger->info("User deleted: $uuid");
     }
 }

@@ -7,6 +7,7 @@ use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\UsersRepository\SqliteUsersRepository;
+use Melni\AdvancedCoursePhp\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 
 class SqliteUsersRepositoryTest extends TestCase
@@ -28,7 +29,7 @@ class SqliteUsersRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $userRepository = new SqliteUsersRepository($connectionStub);
+        $userRepository = new SqliteUsersRepository($connectionStub, new DummyLogger());
 
         $user = new User(
             new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'),
@@ -57,7 +58,7 @@ class SqliteUsersRepositoryTest extends TestCase
             'username' => 'username'
         ]);
 
-        $userRepository = new SqliteUsersRepository($connectionStub);
+        $userRepository = new SqliteUsersRepository($connectionStub, new DummyLogger());
         $user = $userRepository->get(new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'));
 
         $this->assertSame('104e8613-b7b2-4cb9-8296-56a765033ff8', (string)$user->getUuid());
@@ -75,9 +76,9 @@ class SqliteUsersRepositoryTest extends TestCase
         $statementMock->method('fetch')->willReturn(false);
 
         $this->expectException(UserNotFoundException::class);
-        $this->expectExceptionMessage('Пользователя с uuid: 9dba7ab0-93be-4ff4-9699-165320c97694 нет');
+        $this->expectExceptionMessage('No user: 9dba7ab0-93be-4ff4-9699-165320c97694');
 
-        $userRepository = new SqliteUsersRepository($connectionStub);
+        $userRepository = new SqliteUsersRepository($connectionStub, new DummyLogger());
         $userRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
     }
 }

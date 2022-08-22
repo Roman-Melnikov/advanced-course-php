@@ -13,11 +13,13 @@ use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\CommentsRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class SqliteCommentsRepository implements CommentsRepositoryInterface
 {
     public function __construct(
-        private \PDO $pdo
+        private \PDO            $pdo,
+        private LoggerInterface $logger
     )
     {
     }
@@ -36,22 +38,27 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':user_uuid' => $comment->getUser()->getUuid(),
             ':post_uuid' => $comment->getPost()->getUuid(),
         ]);
+
+        $this->logger->info("Comment created: {$comment->getUuid()}");
     }
 
     /**
-     * @throws PostNotFoundException
      * @throws CommentNotFoundException
-     * @throws UserNotFoundException
      * @throws InvalidUuidException
-     * @throws AppException
      */
     public function get(UUID $uuid): Comment
     {
         $commentResult = $this->query(
             'comments',
             $uuid,
-            new CommentNotFoundException("Комментария с uuid: $uuid нет")
         );
+
+        if (!$commentResult) {
+            $message = "No comment: $uuid";
+
+            $this->logger->warning($message);
+            throw new CommentNotFoundException($message);
+        }
 
         $postUuid = new UUID($commentResult['post_uuid']);
         $userUuid = new UUID($commentResult['user_uuid']);
@@ -59,13 +66,11 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         $postResult = $this->query(
             'posts',
             $postUuid,
-            new PostNotFoundException('Поста с uuid: ' . $commentResult['post_uuid'] . ' нет')
         );
 
         $userResult = $this->query(
             'users',
             $userUuid,
-            new UserNotFoundException('Пользователя с uuid: ' . $commentResult['user_uuid'] . ' нет')
         );
 
         $user = new User(
@@ -89,14 +94,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         );
     }
 
-    /**
-     * @throws AppException
-     */
-    private function query(
-        string       $table,
-        UUID         $uuid,
-        AppException $exceptionName
-    ): array
+    private function query(string $table, UUID $uuid): ?array
     {
         $statement = $this->pdo->prepare(
             "SELECT *
@@ -107,22 +105,9 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':uuid' => (string)$uuid
         ]);
 
-        $result = $statement->fetch();
-
-        if (!$result) {
-            throw $exceptionName;
-        }
-
-        return $result;
+        return $statement->fetch() ?: null;
     }
 
-    /**
-     * @throws CommentNotFoundException
-     * @throws PostNotFoundException
-     * @throws InvalidUuidException
-     * @throws AppException
-     * @throws UserNotFoundException
-     */
     public function remove(UUID $uuid): void
     {
         $statement = $this->pdo->prepare(

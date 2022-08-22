@@ -12,6 +12,7 @@ use Melni\AdvancedCoursePhp\Exceptions\PostNotFoundException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\CommentsRepository\SqliteCommentsRepository;
+use Melni\AdvancedCoursePhp\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 
 class SqliteCommentsRepositoryTest extends TestCase
@@ -33,7 +34,7 @@ class SqliteCommentsRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $commentRepository = new SqliteCommentsRepository($connectionStub);
+        $commentRepository = new SqliteCommentsRepository($connectionStub, new DummyLogger());
 
         $user = new User(
             new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'),
@@ -76,7 +77,7 @@ class SqliteCommentsRepositoryTest extends TestCase
             'txt' => 'txt'
         ]);
 
-        $commentRepository = new SqliteCommentsRepository($connectionStub);
+        $commentRepository = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $comment = $commentRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
 
         $this->assertSame('9dba7ab0-93be-4ff4-9699-165320c97694', (string)$comment->getUuid());
@@ -96,9 +97,9 @@ class SqliteCommentsRepositoryTest extends TestCase
         $statementMock->method('fetch')->willReturn(false);
 
         $this->expectException(CommentNotFoundException::class);
-        $this->expectExceptionMessage('Комментария с uuid: 9dba7ab0-93be-4ff4-9699-165320c97694 нет');
+        $this->expectExceptionMessage('No comment: 9dba7ab0-93be-4ff4-9699-165320c97694');
 
-        $commentRepository = new SqliteCommentsRepository($connectionStub);
+        $commentRepository = new SqliteCommentsRepository($connectionStub, new DummyLogger());
         $commentRepository->get(new UUID('9dba7ab0-93be-4ff4-9699-165320c97694'));
     }
 }

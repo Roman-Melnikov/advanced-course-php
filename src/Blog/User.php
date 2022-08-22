@@ -6,6 +6,8 @@ use Melni\AdvancedCoursePhp\Person\Name;
 
 class User
 {
+    public $getUuid;
+
     public function __construct(
         private UUID   $uuid,
         private Name   $name,

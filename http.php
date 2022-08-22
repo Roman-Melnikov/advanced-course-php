@@ -14,7 +14,11 @@ use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreatePostLike;
 use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemovePostLike;
 use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreateCommentLike;
 use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemoveCommentLike;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Melni\AdvancedCoursePhp\Http\Actions\Users\CreateUser;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\FindByUuidPostLikes;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\FindByUuidCommentLikes;
+use Melni\AdvancedCoursePhp\Http\Actions\Users\RemoveUser;
 
 $container = require __DIR__ . '/bootstrap.php';
 
@@ -23,14 +27,18 @@ $routes = [
         '/users/show' => FindByUsername::class,
         '/posts/show' => FindByUuidPost::class,
         '/comments/show' => FindByUuidComment::class,
+        '/postsLikes/show' => FindByUuidPostLikes::class,
+        '/commentsLikes/show' => FindByUuidCommentLikes::class,
     ],
     'POST' => [
         '/posts/create' => CreatePost::class,
         '/comments/create' => CreateComment::class,
         '/postLikes/create' => CreatePostLike::class,
         '/commentLikes/create' => CreateCommentLike::class,
+        '/users/create' => CreateUser::class,
     ],
     'DELETE' => [
+        '/users' => RemoveUser::class,
         '/posts' => RemovePost::class,
         '/comments' => RemoveComment::class,
         '/postLikes' => RemovePostLike::class,
@@ -44,7 +52,7 @@ $request = new Request(
     file_get_contents('php://input')
 );
 
-$logger = $container->get(Logger::class);
+$logger = $container->get(LoggerInterface::class);
 
 try {
     $method = $request->method();

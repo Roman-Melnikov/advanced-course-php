@@ -30,7 +30,7 @@ class RemovePost implements ActionsInterface
         }
 
         return new SuccessFulResponse(
-            ['data' => 'post ' . $uuid . ' deleted successfully']
+            ['action' => 'post ' . $uuid . ' deleted successfully']
         );
     }
 }

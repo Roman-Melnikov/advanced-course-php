@@ -13,7 +13,7 @@ class UUIDTest extends TestCase
         $value = 'a3a17b83c9164932b1c2';
 
         $this->expectException(InvalidUuidException::class);
-        $this->expectExceptionMessage('Неправильный формат UUID: a3a17b83c9164932b1c2');
+        $this->expectExceptionMessage('Incorrect format UUID: a3a17b83c9164932b1c2');
 
         new UUID($value);
     }

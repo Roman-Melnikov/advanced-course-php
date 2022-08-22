@@ -16,7 +16,7 @@ class UUID
     {
         if (!uuid_is_valid($this->uuidString)) {
             throw new InvalidUuidException(
-                "Неправильный формат UUID: $this->uuidString"
+                "Incorrect format UUID: $this->uuidString"
             );
         }
     }

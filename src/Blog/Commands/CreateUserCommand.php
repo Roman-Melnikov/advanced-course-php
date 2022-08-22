@@ -17,7 +17,7 @@ class CreateUserCommand
 {
     public function __construct(
         private UsersRepositoryInterface $usersRepository,
-        private LoggerInterface $logger
+        private LoggerInterface          $logger
     )
     {
     }
@@ -29,8 +29,6 @@ class CreateUserCommand
      */
     public function handle(Arguments $arguments): void
     {
-        $this->logger->info('Create user command started');
-
         $username = $arguments->get('username');
 
         if ($this->userExists($username)) {
@@ -46,7 +44,7 @@ class CreateUserCommand
             $username,
         ));
 
-        $this->logger->info("User created: $uuid");
+        $this->logger->info('User created: ' . $uuid);
     }
 
     private function userExists(string $username): bool

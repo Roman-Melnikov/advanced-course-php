@@ -9,7 +9,7 @@ use Melni\AdvancedCoursePhp\Exceptions\AuthException;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
 use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Http\Actions\ActionsInterface;
-use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\TokenAuthenticationInterface;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
@@ -23,7 +23,7 @@ class CreateComment implements ActionsInterface
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface    $postsRepository,
-        private IdentificationInterface $identification
+        private TokenAuthenticationInterface $authentication
     )
     {
     }
@@ -34,7 +34,7 @@ class CreateComment implements ActionsInterface
     public function handle(Request $request): Response
     {
         try {
-            $user = $this->identification->user($request);
+            $user = $this->authentication->user($request);
             $postUuid = $request->JsonBodyField('post_uuid');
             $txt = $request->JsonBodyField('text');
         } catch (HttpException|AuthException $e) {
@@ -59,7 +59,7 @@ class CreateComment implements ActionsInterface
         $this->commentsRepository->save($comment);
 
         return new SuccessFulResponse(
-            ['data' => (string)$newUuidComment]
+            ['uuid' => (string)$newUuidComment]
         );
     }
 }

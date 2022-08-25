@@ -17,8 +17,9 @@ class UserTest extends TestCase
     {
         $user = new User(
             new UUID(uuid_create(UUID_TYPE_RANDOM)),
+            'username',
+            bin2hex(random_bytes(40)),
             new Name('first', 'last'),
-            'username'
         );
 
         $value = (string)$user;

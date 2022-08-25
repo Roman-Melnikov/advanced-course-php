@@ -35,8 +35,9 @@ class SqlitePostsRepositoryTest extends TestCase
 
         $user = new User(
             new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'),
+            'username',
+            bin2hex(random_bytes(40)),
             new Name('first', 'last'),
-            'username'
         );
 
         $post = new Post(
@@ -64,6 +65,7 @@ class SqlitePostsRepositoryTest extends TestCase
             'first_name' => 'first',
             'last_name' => 'last',
             'username' => 'username',
+            'password' => 'password',
             'title' => 'title',
             'text' => 'text'
         ]);

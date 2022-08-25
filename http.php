@@ -1,24 +1,26 @@
 <?php
 
-use Melni\AdvancedCoursePhp\Http\Actions\Users\FindByUsername;
-use Melni\AdvancedCoursePhp\Http\Actions\Posts\FindByUuidPost;
-use Melni\AdvancedCoursePhp\Http\Actions\Posts\CreatePost;
-use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
-use Melni\AdvancedCoursePhp\Http\ErrorResponse;
+use Melni\AdvancedCoursePhp\Http\Actions\Auth\LogIn;
+use Melni\AdvancedCoursePhp\Http\Actions\Auth\LogOut;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\CreateComment;
-use Melni\AdvancedCoursePhp\Http\Actions\Posts\RemovePost;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\FindByUuidComment;
 use Melni\AdvancedCoursePhp\Http\Actions\Comments\RemoveComment;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreatePostLike;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemovePostLike;
 use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreateCommentLike;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemoveCommentLike;
-use Psr\Log\LoggerInterface;
-use Melni\AdvancedCoursePhp\Http\Actions\Users\CreateUser;
-use Melni\AdvancedCoursePhp\Http\Actions\Likes\FindByUuidPostLikes;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\CreatePostLike;
 use Melni\AdvancedCoursePhp\Http\Actions\Likes\FindByUuidCommentLikes;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\FindByUuidPostLikes;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemoveCommentLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Likes\RemovePostLike;
+use Melni\AdvancedCoursePhp\Http\Actions\Posts\CreatePost;
+use Melni\AdvancedCoursePhp\Http\Actions\Posts\FindByUuidPost;
+use Melni\AdvancedCoursePhp\Http\Actions\Posts\RemovePost;
+use Melni\AdvancedCoursePhp\Http\Actions\Users\CreateUser;
+use Melni\AdvancedCoursePhp\Http\Actions\Users\FindByUsername;
 use Melni\AdvancedCoursePhp\Http\Actions\Users\RemoveUser;
+use Melni\AdvancedCoursePhp\Http\ErrorResponse;
+use Melni\AdvancedCoursePhp\Http\Request;
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__ . '/bootstrap.php';
 
@@ -36,6 +38,8 @@ $routes = [
         '/postLikes/create' => CreatePostLike::class,
         '/commentLikes/create' => CreateCommentLike::class,
         '/users/create' => CreateUser::class,
+        '/login' => LogIn::class,
+        '/logout' => LogOut::class,
     ],
     'DELETE' => [
         '/users' => RemoveUser::class,
@@ -76,12 +80,10 @@ $actionClassName = $routes[$method][$path];
 try {
     $action = $container->get($actionClassName);
     $response = $action->handle($request);
-}catch (Exception $e) {
+} catch (Exception $e) {
     $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse)->send();
     return;
 }
 
-
 $response->send();
-

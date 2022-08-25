@@ -8,8 +8,8 @@ use Melni\AdvancedCoursePhp\Blog\UUID;
 class Like
 {
     public function __construct(
-        private UUID $uuid,
-        private User $user
+        protected UUID $uuid,
+        protected User $user
     )
     {
     }

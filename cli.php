@@ -3,18 +3,17 @@
 use Melni\AdvancedCoursePhp\Exceptions\AppException;
 use Melni\AdvancedCoursePhp\Blog\Commands\CreateUserCommand;
 use Melni\AdvancedCoursePhp\Blog\Commands\Arguments;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 //$faker = Faker\Factory::create('ru_RU');
 
 $container = require __DIR__ . '/bootstrap.php';
 
-$logger = $container->get(Logger::class);
+$logger = $container->get(LoggerInterface::class);
 
 try {
     $command = $container->get(CreateUserCommand::class);
-    $command->hanle(Arguments::fromArgv($argv));
-
+    $command->handle(Arguments::fromArgv($argv));
 } catch (AppException $e) {
     $logger->error($e->getMessage(), ['exception' => $e]);
 }

@@ -4,6 +4,7 @@ $pdo = require 'db.php';
 $pdo->exec('CREATE TABLE users (
     uuid VARCHAR(36) NOT NULL PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
+    password TEXT NOT NULL UNIQUE,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL
 )');
@@ -38,5 +39,12 @@ $pdo->exec('CREATE TABLE commentsLikes (
     comment_uuid VARCHAR(36) NOT NULL,
     user_uuid VARCHAR(36) NOT NULL,
     FOREIGN KEY (comment_uuid) REFERENCES comments(uuid),
+    FOREIGN KEY (user_uuid) REFERENCES users(uuid)   
+)');
+
+$pdo->exec('CREATE TABLE tokens (
+    token VARCHAR(40) NOT NULL PRIMARY KEY,
+    user_uuid VARCHAR(36) NOT NULL,
+    expires_on VARCHAR(25) NOT NULL,
     FOREIGN KEY (user_uuid) REFERENCES users(uuid)   
 )');

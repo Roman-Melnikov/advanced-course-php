@@ -41,15 +41,14 @@ class CreateUser implements ActionsInterface
             return new ErrorResponse($message);
         }
 
+        $password = $request->JsonBodyField('password');
         $first = $request->JsonBodyField('first_name');
         $last = $request->JsonBodyField('last_name');
 
-        $uuid = UUID::random();
-
-        $user = new User(
-            $uuid,
+        $user= User::createFrom(
+            $username,
+            $password,
             new Name($first, $last),
-            $username
         );
 
         $this->repository->save($user);

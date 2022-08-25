@@ -3,12 +3,10 @@
 namespace Melni\AdvancedCoursePhp\Blog\Commands;
 
 use Melni\AdvancedCoursePhp\Blog\User;
-use Melni\AdvancedCoursePhp\Blog\UUID;
 use Melni\AdvancedCoursePhp\Exceptions\ArgumentsException;
 use Melni\AdvancedCoursePhp\Exceptions\CommandException;
 use Melni\AdvancedCoursePhp\Exceptions\InvalidUuidException;
 use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
-use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
 use Melni\AdvancedCoursePhp\Person\Name;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 use Psr\Log\LoggerInterface;
@@ -36,15 +34,18 @@ class CreateUserCommand
             return;
         }
 
-        $uuid = UUID::random();
+        $password = $arguments->get('password');
 
-        $this->usersRepository->save(new User(
-            $uuid,
-            new Name($arguments->get('first_name'), $arguments->get('last_name')),
+        $user = User::createFrom(
             $username,
-        ));
+            $password,
+            new Name(
+                $arguments->get('first_name'),
+                $arguments->get('last_name')
+            ),
+        );
 
-        $this->logger->info('User created: ' . $uuid);
+        $this->usersRepository->save($user);
     }
 
     private function userExists(string $username): bool

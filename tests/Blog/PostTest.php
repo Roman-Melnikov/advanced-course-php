@@ -13,13 +13,15 @@ class PostTest extends TestCase
 {
     /**
      * @throws InvalidUuidException
+     * @throws \Exception
      */
     public function testItReturnsPostAsString(): void
     {
         $user = new User(
             new UUID(uuid_create(UUID_TYPE_RANDOM)),
+            'username',
+            bin2hex(random_bytes(40)),
             new Name('first', 'last'),
-            'username'
         );
 
         $post = new Post(

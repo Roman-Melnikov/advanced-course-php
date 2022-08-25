@@ -15,8 +15,14 @@ use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
-use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
-use Melni\AdvancedCoursePhp\Http\Auth\JsonBodyUsernameIdentification;
+use Melni\AdvancedCoursePhp\Http\Auth\AuthenticationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\JsonBodyUsernameAuthentication;
+use Melni\AdvancedCoursePhp\Http\Auth\PasswordAuthenticationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\PasswordAuthentication;
+use Melni\AdvancedCoursePhp\Repositories\Interfaces\AuthTokensRepositoryInterface;
+use Melni\AdvancedCoursePhp\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
+use Melni\AdvancedCoursePhp\Http\Auth\TokenAuthenticationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\BearerTokenAuthentication;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -75,8 +81,8 @@ $container->bind(
 );
 
 $container->bind(
-    IdentificationInterface::class,
-    JsonBodyUsernameIdentification::class
+    AuthenticationInterface::class,
+    JsonBodyUsernameAuthentication::class
 );
 
 $container->bind(
@@ -94,6 +100,21 @@ $container->bind(
 $container->bind(
     LoggerInterface::class,
     $logger
+);
+
+$container->bind(
+    PasswordAuthenticationInterface::class,
+    PasswordAuthentication::class
+);
+
+$container->bind(
+    TokenAuthenticationInterface::class,
+    BearerTokenAuthentication::class
+);
+
+$container->bind(
+    AuthTokensRepositoryInterface::class,
+    SqliteAuthTokensRepository::class
 );
 
 return $container;

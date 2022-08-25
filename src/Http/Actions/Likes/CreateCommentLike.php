@@ -9,7 +9,7 @@ use Melni\AdvancedCoursePhp\Exceptions\AuthException;
 use Melni\AdvancedCoursePhp\Exceptions\HttpException;
 use Melni\AdvancedCoursePhp\Exceptions\LikeAlreadyExists;
 use Melni\AdvancedCoursePhp\Http\Actions\ActionsInterface;
-use Melni\AdvancedCoursePhp\Http\Auth\IdentificationInterface;
+use Melni\AdvancedCoursePhp\Http\Auth\TokenAuthenticationInterface;
 use Melni\AdvancedCoursePhp\Http\ErrorResponse;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Http\Response;
@@ -23,7 +23,7 @@ class CreateCommentLike implements ActionsInterface
     public function __construct(
         private CommentsLikesRepositoryInterface $likesRepository,
         private CommentsRepositoryInterface      $commentsRepository,
-        private IdentificationInterface $identification
+        private TokenAuthenticationInterface $authentication
     )
     {
     }
@@ -31,7 +31,7 @@ class CreateCommentLike implements ActionsInterface
     public function handle(Request $request): Response
     {
         try {
-            $user = $this->identification->user($request);
+            $user = $this->authentication->user($request);
             $commentUuid = $request->JsonBodyField('comment_uuid');
         } catch (HttpException|AuthException $e) {
             return new ErrorResponse($e->getMessage());

@@ -75,8 +75,12 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
         $user = new User(
             new UUID($commentResult['user_uuid']),
-            new Name($userResult['first_name'], $userResult['last_name']),
-            $userResult['username']
+            $userResult['username'],
+            $userResult['password'],
+            new Name(
+                $userResult['first_name'],
+                $userResult['last_name']
+            ),
         );
 
         $post = new Post(

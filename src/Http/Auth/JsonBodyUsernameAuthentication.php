@@ -10,7 +10,7 @@ use Melni\AdvancedCoursePhp\Exceptions\UserNotFoundException;
 use Melni\AdvancedCoursePhp\Http\Request;
 use Melni\AdvancedCoursePhp\Repositories\Interfaces\UsersRepositoryInterface;
 
-class JsonBodyUsernameIdentification implements IdentificationInterface
+class JsonBodyUsernameAuthentication implements AuthenticationInterface
 {
     public function __construct(
         private UsersRepositoryInterface $repository

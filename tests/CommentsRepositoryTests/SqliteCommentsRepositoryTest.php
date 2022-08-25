@@ -38,8 +38,9 @@ class SqliteCommentsRepositoryTest extends TestCase
 
         $user = new User(
             new UUID('104e8613-b7b2-4cb9-8296-56a765033ff8'),
+            'username',
+            bin2hex(random_bytes(40)),
             new Name('first', 'last'),
-            'username'
         );
 
         $post = new Post(
@@ -71,6 +72,7 @@ class SqliteCommentsRepositoryTest extends TestCase
             'first_name' => 'first',
             'last_name' => 'last',
             'username' => 'username',
+            'password' => 'password',
             'post_uuid' => '10418021-7cc6-4221-a1e8-29bfac1b4d20',
             'title' => 'title',
             'text' => 'text',

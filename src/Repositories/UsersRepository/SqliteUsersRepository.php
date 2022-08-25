@@ -35,15 +35,16 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO users 
-              (uuid, username, first_Name, last_Name)
+              (uuid, username, first_Name, last_Name, password)
             VALUES 
-              (:uuid, :username, :firstName, :lastName)'
+              (:uuid, :username, :firstName, :lastName, :password)'
         );
         $statement->execute([
             ':uuid' => (string)$user->getUuid(),
             ':username' => $user->getUsername(),
             ':firstName' => $user->getName()->getFirstName(),
-            ':lastName' => $user->getName()->getLastName()
+            ':lastName' => $user->getName()->getLastName(),
+            ':password' => $user->getHashedPassword(),
         ]);
 
         $this->logger->info("User created: {$user->getUuid()}");
@@ -77,8 +78,12 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         }
         return new User(
             new UUID($result['uuid']),
-            new Name($result['first_name'], $result['last_name']),
-            $result['username']
+            $result['username'],
+            $result['password'],
+            new Name(
+                $result['first_name'],
+                $result['last_name']
+            ),
         );
     }
 

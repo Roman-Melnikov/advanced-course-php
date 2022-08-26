@@ -18,7 +18,6 @@ class LogOut implements ActionsInterface
     private const HEADER_PREFIX = 'Bearer ';
 
     public function __construct(
-        private \PDO                          $pdo,
         private AuthTokensRepositoryInterface $authTokensRepository
     )
     {
@@ -44,46 +43,20 @@ class LogOut implements ActionsInterface
             strlen(self::HEADER_PREFIX)
         );
 
-        if (!$this->authTokenExists($token)) {
-            return new ErrorResponse(
-                'Cannot find token: ' . $token
-            );
-        }
-
-        $expired = (new \DateTimeImmutable())
-            ->format(\DateTimeInterface::ATOM);
-
         try {
-            $statement = $this->pdo->prepare(
-                'UPDATE tokens
-            SET expires_on = :expired
-            WHERE token = :token'
-            );
-
-            $statement->execute(
-                [
-                    ':expired' => $expired,
-                    ':token' => $token
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw new AuthTokenRepositoryException(
-                $e->getMessage(), (int)$e->getCode(), $e
-            );
+            $authToken = $this->authTokensRepository->get($token);
+        } catch (AuthTokenNotFoundException $e) {
+            return new ErrorResponse($e->getMessage());
         }
+
+        $expired = new \DateTimeImmutable();
+
+        $authToken->setExpiresOn($expired);
+
+        $this->authTokensRepository->save($authToken);
 
         return new SuccessFulResponse(
             ['Token expired' => "[$token]"]
         );
-    }
-
-    private function authTokenExists(string $token): bool
-    {
-        try {
-            $this->authTokensRepository->get($token);
-        } catch (AuthTokenNotFoundException $e) {
-            return false;
-        }
-        return true;
     }
 }

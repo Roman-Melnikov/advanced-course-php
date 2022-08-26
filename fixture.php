@@ -22,7 +22,7 @@ $pdo->exec('CREATE TABLE comments (
     txt TEXT NOT NULL,
     user_uuid VARCHAR(36) NOT NULL,
     post_uuid VARCHAR(36) NOT NULL,
-    FOREIGN KEY (user_uuid) REFERENCES users(uuid)
+    FOREIGN KEY (user_uuid) REFERENCES users(uuid),
     FOREIGN KEY (post_uuid) REFERENCES posts(uuid)
 )');
 

@@ -1,19 +1,25 @@
 <?php
 
-use Melni\AdvancedCoursePhp\Exceptions\AppException;
-use Melni\AdvancedCoursePhp\Blog\Commands\CreateUserCommand;
-use Melni\AdvancedCoursePhp\Blog\Commands\Arguments;
-use Psr\Log\LoggerInterface;
-
-//$faker = Faker\Factory::create('ru_RU');
+use Melni\AdvancedCoursePhp\Blog\Commands\DeletePost;
+use Melni\AdvancedCoursePhp\Blog\Commands\FakeData\PopulateDB;
+use Melni\AdvancedCoursePhp\Blog\Commands\Users\CreateUser;
+use Melni\AdvancedCoursePhp\Blog\Commands\Users\UpdateUser;
+use Symfony\Component\Console\Application;
 
 $container = require __DIR__ . '/bootstrap.php';
 
-$logger = $container->get(LoggerInterface::class);
+$application = new Application();
 
-try {
-    $command = $container->get(CreateUserCommand::class);
-    $command->handle(Arguments::fromArgv($argv));
-} catch (AppException $e) {
-    $logger->error($e->getMessage(), ['exception' => $e]);
+$commandsClasses = [
+    CreateUser::class,
+    DeletePost::class,
+    UpdateUser::class,
+    PopulateDB::class,
+];
+
+foreach ($commandsClasses as $commandsClass) {
+    $command = $container->get($commandsClass);
+    $application->add($command);
 }
+
+$application->run();

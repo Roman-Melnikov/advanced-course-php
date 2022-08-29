@@ -37,7 +37,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             'INSERT INTO users 
               (uuid, username, first_Name, last_Name, password)
             VALUES 
-              (:uuid, :username, :firstName, :lastName, :password)'
+              (:uuid, :username, :firstName, :lastName, :password)
+            ON CONFLICT (uuid) DO UPDATE SET
+                first_name = :firstName,
+                last_name = :lastName'
         );
         $statement->execute([
             ':uuid' => (string)$user->getUuid(),

@@ -23,10 +23,21 @@ use Melni\AdvancedCoursePhp\Repositories\Interfaces\AuthTokensRepositoryInterfac
 use Melni\AdvancedCoursePhp\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
 use Melni\AdvancedCoursePhp\Http\Auth\TokenAuthenticationInterface;
 use Melni\AdvancedCoursePhp\Http\Auth\BearerTokenAuthentication;
+use Faker\Provider\ru_RU\Person;
+use Faker\Provider\ru_RU\Internet;
+use Faker\Provider\ru_RU\Text;
+use Faker\Provider\Lorem;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 Dotenv::createImmutable(__DIR__)->safeLoad();
+
+$faker = new \Faker\Generator();
+
+$faker->addProvider(new Person($faker));
+$faker->addProvider(new Internet($faker));
+$faker->addProvider(new Text($faker));
+$faker->addProvider(new Lorem($faker));
 
 $logger = (new Logger('blog'));
 
@@ -54,6 +65,11 @@ if ('yes' === $_SERVER['LOG_TO_CONSOLE']) {
 }
 
 $container = new DIContainer();
+
+$container->bind(
+    \Faker\Generator::class,
+    $faker
+);
 
 $container->bind(
     UsersRepositoryInterface::class,

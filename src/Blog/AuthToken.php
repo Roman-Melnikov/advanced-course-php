@@ -6,12 +6,13 @@ class AuthToken
 {
 
     public function __construct(
-        private string $token,
-        private UUID $userUuid,
+        private string             $token,
+        private UUID               $userUuid,
         private \DateTimeImmutable $expiresOn
     )
     {
     }
+
 
     public function __toString(): string
     {
@@ -40,5 +41,13 @@ class AuthToken
     public function getExpiresOn(): \DateTimeImmutable
     {
         return $this->expiresOn;
+    }
+
+    /**
+     * @param \DateTimeImmutable $expiresOn
+     */
+    public function setExpiresOn(\DateTimeImmutable $expiresOn): void
+    {
+        $this->expiresOn = $expiresOn;
     }
 }
